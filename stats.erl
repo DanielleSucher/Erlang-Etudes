@@ -1,6 +1,6 @@
 -module(stats).
 -author("Danielle Sucher <dsucher@gmail.com>").
--export([maximum/1, minimum/1, range/1]).
+-export([maximum/1, minimum/1, range/1, mean/1, stdv/1]).
 
 -spec(range(list()) -> list()).
 
@@ -28,3 +28,19 @@ max_or_min(F, [Head|Tail], Current) ->
     true -> max_or_min(F, Tail, Head);
     false -> max_or_min(F, Tail, Current)
   end.
+
+
+-spec(mean(list()) -> number()).
+
+mean(List) ->
+  lists:foldl(fun(X, Sum) -> X + Sum end, 0, List)/length(List).
+
+
+-spec(stdv(list()) -> number()).
+
+stdv(List) ->
+  N = length(List),
+  {Sum, SumOfSquares} = lists:foldl(fun(X, {S, SqS}) -> {X + S, (X * X) + SqS} end, {0, 0}, List),
+  Difference = (SumOfSquares * N) - (Sum * Sum),
+  Quotient = Difference/(N * (N - 1)),
+  math:sqrt(Quotient).

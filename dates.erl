@@ -25,18 +25,19 @@ date_parts(DateString) ->
 
 julian(DateString) ->
   [Year, Month, Day] = date_parts(DateString),
-  julian(Year, Month, Day, ?DAYS_PER_MONTH, 0).
+  julian(Year, Month, Day, lists:sublist(?DAYS_PER_MONTH, Month - 1), 0).
 
 -spec(julian(integer(), integer(), integer(), list(), integer()) -> integer()).
 
-julian(Year, Month, Day, DaysOfMonthList, Acc) when Month < (14 - length(DaysOfMonthList)) ->
+julian(Year, Month, Day, [], Acc) ->
   Leap = case Month > 2 andalso is_leap_year(Year) of
     true -> 1;
     false -> 0
   end,
   Acc + Day + Leap;
-julian(Year, Month, Day, [Head|Tail], Acc) ->
-  julian(Year, Month, Day, Tail, Acc + Head).
+julian(Year, Month, Day, DaysOfMonthList, _) ->
+  Total = lists:foldl(fun(X, Sum) -> X + Sum end, 0, DaysOfMonthList),
+  julian(Year, Month, Day, [], Total).
 
 is_leap_year(Year) ->
   (Year rem 4 == 0 andalso Year rem 100 /= 0)
