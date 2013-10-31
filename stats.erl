@@ -10,13 +10,13 @@ range(List) ->
 -spec(minimum(list()) -> number()).
 
 minimum([Head|Tail]) ->
-  max_or_min(fun(X,Y) -> X < Y end, Tail, Head).
+  max_or_min(fun erlang:'<'/2, Tail, Head).
 
 
 -spec(maximum(list()) -> number()).
 
 maximum([Head|Tail]) ->
-  max_or_min(fun(X,Y) -> X > Y end, Tail, Head).
+  max_or_min(fun erlang:'>'/2, Tail, Head).
 
 
 -spec(max_or_min(function(), list(), number()) -> number()).
